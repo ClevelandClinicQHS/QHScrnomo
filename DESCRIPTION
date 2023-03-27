@@ -1,12 +1,28 @@
 Package: QHScrnomo
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
-Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+Title: Construct Nomograms for Competing Risks Regression Models
+Version: 2.2.1
+Authors@R: c(
+    person("Michael", "Kattan", email = "kattanm@ccf.org", role = "aut"),
+    person("Changhong", "Yu", email = "yuc@ccf.org", role = "aut"),
+    person("Xinge", "Ji", email = "jix@ccf.org", role = "aut"),
+    person("Zajichek", "Alex", email = "zajicha2@ccf.org", role = "cre"))
+Description: Nomograms are constructed to predict the cumulative incidence
+    rate which is calculated after adjusting for competing causes to the event of interest. 
+    K-fold cross-validation is implemented to validate predictive accuracy using a competing-risk version of the concordance index.
+    Methods are as described in: Kattan MW, Heller G, 
+    Brennan MF (2003) <doi:10.1002/sim.1574>.
+License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.2
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Imports: 
+    cmprsk,
+    methods,
+    rms,
+    stats
+Depends: 
+    R (>= 2.10)
+LazyData: true
