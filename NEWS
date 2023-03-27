@@ -1,0 +1,25 @@
+Note of changes.
+
+2008/03/11 - start to construct the first version 0.1-1
+2008/03/14 - add nomogram.crr to correct lp  and set
+             verion number to 0.1-2
+           - add function zzz.R
+2008/03/17 - capitalize package name as QHScrnomo
+2008/03/20 - set version to 0.1-3
+           - add flag 'ci' to 'nomogram.crr'
+2008/02/21 - add function 'pred.crr','pred.ci' and 'groupci'
+2008/04/02 - add a check to 'crr.fit' if bfitj are very large(infinite),
+             stop giving a error message to check if there is a predictor
+             with large integers( i.e, year of surgery)
+2008/04/02 - add 'tenf.crr'
+2008/08/04 - modify function 'pred.ci' to accomodate when failcode == 1
+2008/10/16 - edit crr.fit and tenf.crr to deal with subset options in cph
+2008/12/31 - fixed a bug in crr.fit
+2009/06/03 - fixed a bug in sas.crr
+2011/03/01 - add cindex, summary.crr and anova.crr
+2011/04/13 - add Newlabels.cmprsk and Newlevels.cmprsk
+2011/04/18 - fix a bug in tenf.crr
+2011/04/19 - change the random sampling scheme in tenf.crr
+             so that the number of patients in each fold
+             is more balanced
+05/23/2011 - fix a bug in predict.cmprsk

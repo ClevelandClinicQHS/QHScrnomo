@@ -1,0 +1,13 @@
+citHeader("To cite QHScrnomo in publications use:")
+
+citEntry(
+  entry    = "Article",
+  title    = "A competing-risks nomogram for sarcoma-specific death following local recurrence",
+  author   = "Michael W. Kattan, Glenn Heller and Murray F. Brennan",
+  journal  = "Statistics in Medicine",
+  year     = 2003,
+  volume   = 22,
+  pages    = 3515-3525,
+  url      = "https://pubmed.ncbi.nlm.nih.gov/14601016/",
+  textVersion = "Kattan MW, Heller G, Brennan MF. A competing-risks nomogram for sarcoma-specific death following local recurrence. Stat Med. 2003 Nov 30;22(22):3515-25. doi: 10.1002/sim.1574. PMID: 14601016."
+)

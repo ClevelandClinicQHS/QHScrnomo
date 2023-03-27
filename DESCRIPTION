@@ -1,0 +1,30 @@
+Package: QHScrnomo
+Type: Package
+Title: Construct Nomogram for Competing Risk Models
+Version: 2.2.0
+Date: 2021-10-27
+Authors@R: c(
+    person("Michael", "Kattan", email = "kattanm@ccf.org", role = "aut"),
+    person("Changhong", "Yu", email = "yuc@ccf.org", role = "aut"),
+    person("Xinge", "Ji", email="jix@ccf.org", role="cre"))
+Depends: R (>= 3.5.0),Hmisc,rms,cmprsk
+Suggests: rmarkdown, knitr, survival
+Description: Nomogram is constructed to predict cumulative incidence
+    rate, which is calculated by adjusting for competing causes other
+    than that of interest. K-fold cross-validation function is implemented
+    to validate the performance. Competing risk version of concordance index
+    is calculated. Methods are as described in: Kattan MW, Heller G, 
+    Brennan MF (2003) <doi:10.1002/sim.1574>.
+License: GPL-2
+NeedsCompilation: yes
+Config/testthat/edition: 3
+RoxygenNote: 7.1.2
+VignetteBuilder: knitr
+Encoding: UTF-8
+Packaged: 2021-11-04 16:55:23 UTC; jix
+Author: Michael Kattan [aut],
+  Changhong Yu [aut],
+  Xinge Ji [cre]
+Maintainer: Xinge Ji <jix@ccf.org>
+Repository: CRAN
+Date/Publication: 2021-11-05 13:20:02 UTC

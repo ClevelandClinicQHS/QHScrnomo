@@ -1,0 +1,123 @@
+---
+title: "Tutorial: QHScrnomo"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{usage}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  warning = FALSE, 
+  message = FALSE,
+  comment = "#>"
+)
+```
+
+## Introduction
+
+The `QHScrnomo` provides functions for fitting and predicting a competing risk model, creating a nomogram, k-fold cross validation, calculating the discrimination metric, and drawing calibration curve. This vignette will walk a reader through the various functions available.
+
+## Setup
+
+Before going through the tutorial, load {QHScrnomo}.
+
+```{r message = FALSE, warning=FALSE, results='hide'}
+library(QHScrnomo)
+sessionInfo()
+```
+
+## Example data set
+
+We'll be using the `prostate.dat` data set throughout this example.
+
+* This is an artificial prostate cancer dataset used for illustrating the usages of functions in `QHScrnomo`
+
+* This is a data frame with 2000 observations on the following 9 variables:
+
+    - `UNIQID`: patient id
+    - `TX`: Treatment options of prostate cancer with levels `EBRT`, `PI`, `RP`
+    - `PSA`: Pre-treatment PSA levels
+    - `BX_GLSN_CAT`: Biopsy Gleason Score Sum. a factor with levels 1 for 2-6 2 for 7 and 3 for 8-10
+    - `CLIN_STG`: Clinical stage with levels `T1`, `T2`, `T3`
+    - `Age`: Age at treatment date
+    - `RACE_AA`: patient ethnicity.a factor with levels 0 for other and 1 for African American
+    - `TIME_EVENT`: follow up time in months
+    - `EVENT_DOD`: follow status, `0` - censored, `1` - died of prostate cancer, `2` - died of other causes
+    
+```{r}
+data("prostate.dat")
+str(prostate.dat)
+```
+
+## Fit a competing risk model
+
+The function `crr.fit` uses a Cox proportional hazards regression model constructed from `cph` in `rms` library (by Frank Harrell).
+
+```{r}
+dd <- datadist(prostate.dat)
+options(datadist = "dd")
+prostate.f <- cph(Surv(TIME_EVENT,EVENT_DOD == 1) ~ TX  + rcs(PSA,3) +
+           BX_GLSN_CAT + CLIN_STG + rcs(AGE,3) +
+           RACE_AA, data = prostate.dat,
+           x = TRUE, y= TRUE, surv=TRUE, time.inc = 144)
+prostate.crr <- crr.fit(prostate.f, cencode = 0, failcode = 1)
+summary(prostate.crr)
+```
+
+## Create nomogram
+
+```{r fig.width=7, fig.height=5}
+prostate.g <- Newlabels(prostate.crr,
+                        c(TX = 'Treatment options', 
+                          BX_GLSN_CAT = 'Biopsy Gleason Score Sum',
+                          CLIN_STG = 'Clinical stage'))
+nomogram.crr(prostate.g,
+             failtime = 120,
+             lp=FALSE,
+             xfrac=0.65,
+             fun.at = seq(0.2, 0.45, 0.05),
+             funlabel = "Predicted 10-year cumulative incidence")
+```
+
+```{r}
+# output a math formula
+sas.cmprsk(prostate.crr, time = 120)
+```
+
+
+## Model evaluation
+
+```{r}
+# anova table
+anova(prostate.crr)
+```
+
+```{r}
+# prediction from 10-fold cross validation
+prostate.dat$preds.tenf <- tenf.crr(prostate.crr, time=120, fold = 10)
+str(prostate.dat$preds.tenf)
+```
+
+```{r}
+## calculate the CRR version of concordance index
+with(prostate.dat, cindex(preds.tenf,
+                          ftime = TIME_EVENT,
+                          fstatus =EVENT_DOD, type = "crr"))["cindex"]
+```
+
+```{r fig.width=5, fig.height=5}
+## generate the calibration curve for predicted 10-year cancer
+## specific mortality
+with(prostate.dat,
+     groupci(
+         preds.tenf, 
+         ftime = TIME_EVENT,
+         fstatus =EVENT_DOD, g = 5, u = 120,
+         xlab = "Nomogram predicted 10-year cancerspecific mortality",
+         ylab = "Observed predicted 10-year cancerspecific mortality")
+)
+```
+
