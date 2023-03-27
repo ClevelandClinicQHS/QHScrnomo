@@ -34,16 +34,21 @@
 ##'   attached.
 ##' @author Michael W. Kattan, Ph.D. and Changhong Yu. Department of
 ##'   Quantitative Health Sciences, Cleveland Clinic
-##' @importFrom cmprsk crr
-##' @export
 ##' @seealso \code{\link[rms]{cph}} \code{\link[cmprsk]{crr}}
 ##'   \code{\link[QHScrnomo]{nomogram.crr}}
 ##' @references Michael W. Kattan, Glenn Heller and Murray F. Brennan (2003). A
 ##'   competing-risks nomogram for sarcoma-specific death following local
 ##'   recurrence. Statistics in Medicine. \code{Stat Med}. 2003;22:3515-3525.
-#'
+##' @import rms
+##' @export
 ##' @examples
-##' 1
+##' dd <- datadist(prostate.dat)
+##' options(datadist = "dd")
+##' prostate.f <- cph(Surv(TIME_EVENT,EVENT_DOD == 1) ~ TX  + rcs(PSA,3) +
+##'            BX_GLSN_CAT +  CLIN_STG + rcs(AGE,3) +
+##'            RACE_AA, data = prostate.dat,
+##'            x = TRUE, y = TRUE, surv = TRUE,time.inc = 144)
+##' prostate.crr <- crr.fit(prostate.f, cencode = 0, failcode = 1)
 ##'
 ##' @keywords survival multivariate
 ##'

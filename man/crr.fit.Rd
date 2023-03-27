@@ -47,7 +47,12 @@ This function requires that the \code{\link{rms}} and \code{\link{cmprsk}} libra
 attached.
 }
 \examples{
-1
+dd <- datadist(prostate.dat)
+options(datadist = "dd")
+prostate.f <- cph(Surv(TIME_EVENT,EVENT_DOD == 1) ~ TX  + rcs(PSA,3) +
+           BX_GLSN_CAT +  CLIN_STG + rcs(AGE,3) +
+           RACE_AA, data = prostate.dat,
+           x = TRUE, y = TRUE, surv = TRUE,time.inc = 144)
 
 }
 \references{
