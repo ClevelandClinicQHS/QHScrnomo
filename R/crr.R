@@ -49,6 +49,7 @@
 ##'            RACE_AA, data = prostate.dat,
 ##'            x = TRUE, y = TRUE, surv = TRUE,time.inc = 144)
 ##' prostate.crr <- crr.fit(prostate.f, cencode = 0, failcode = 1)
+##' prostate.crr
 ##'
 ##' @keywords survival multivariate
 ##'

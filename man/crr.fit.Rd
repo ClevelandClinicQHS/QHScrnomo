@@ -53,6 +53,8 @@ prostate.f <- cph(Surv(TIME_EVENT,EVENT_DOD == 1) ~ TX  + rcs(PSA,3) +
            BX_GLSN_CAT +  CLIN_STG + rcs(AGE,3) +
            RACE_AA, data = prostate.dat,
            x = TRUE, y = TRUE, surv = TRUE,time.inc = 144)
+prostate.crr <- crr.fit(prostate.f, cencode = 0, failcode = 1)
+prostate.crr
 
 }
 \references{
