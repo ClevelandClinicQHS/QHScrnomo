@@ -30,5 +30,5 @@ devtools::install_github("ClevelandClinicQHS/QHScrnomo")
 Or from CRAN:
 
 ``` r
-install.packages("devtools")
+install.packages("QHScrnomo")
 ```
