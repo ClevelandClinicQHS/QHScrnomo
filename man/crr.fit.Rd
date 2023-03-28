@@ -32,19 +32,18 @@ a censored observation}
 \item{failcode}{the value of the status indicator that indicates an
 event of interest}
 \item{cph.f}{regular survival model fitted by cph which is saved for
-function \code{\link[QHScrnomo]{nomogram.crr}} to adjust lp for
+function \code{nomogram.crr} to adjust lp for
 competing risks}
 \item{cphdat}{data used for cph model, where all
 predictors are represented in numeric format, which is used by function
-\code{\link[QHScrnomo]{tenf.crr}} to do ten fold cross-validation}
+\code{tenf.crr} to do ten fold cross-validation}
 }
 \description{
 Fits a competing risks regression model using the \code{\link[cmprsk]{crr}} function from an existing \code{\link[rms]{cph}}
 object which can then be used to construct a nomogram.
 }
 \note{
-This function requires that the \code{\link{rms}} and \code{\link{cmprsk}} libraries are
-attached.
+This function requires that the \code{\link{rms}} package is attached
 }
 \examples{
 dd <- datadist(prostate.dat)
@@ -55,7 +54,6 @@ prostate.f <- cph(Surv(TIME_EVENT,EVENT_DOD == 1) ~ TX  + rcs(PSA,3) +
            x = TRUE, y = TRUE, surv = TRUE,time.inc = 144)
 prostate.crr <- crr.fit(prostate.f, cencode = 0, failcode = 1)
 prostate.crr
-
 }
 \references{
 Michael W. Kattan, Glenn Heller and Murray F. Brennan (2003). A
@@ -64,7 +62,7 @@ recurrence. Statistics in Medicine. \code{Stat Med}. 2003;22:3515-3525.
 }
 \seealso{
 \code{\link[rms]{cph}} \code{\link[cmprsk]{crr}}
-\code{\link[QHScrnomo]{nomogram.crr}}
+\code{nomogram.crr}
 }
 \author{
 Michael W. Kattan, Ph.D. and Changhong Yu. Department of

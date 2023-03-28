@@ -25,17 +25,16 @@
 ##' \item{failcode}{the value of the status indicator that indicates an
 ##' event of interest}
 ##' \item{cph.f}{regular survival model fitted by cph which is saved for
-##'   function \code{\link[QHScrnomo]{nomogram.crr}} to adjust lp for
+##'   function \code{nomogram.crr} to adjust lp for
 ##'   competing risks}
 ##' \item{cphdat}{data used for cph model, where all
 ##'   predictors are represented in numeric format, which is used by function
-##'   \code{\link[QHScrnomo]{tenf.crr}} to do ten fold cross-validation}
-##' @note This function requires that the \code{\link{rms}} and \code{\link{cmprsk}} libraries are
-##'   attached.
+##'   \code{tenf.crr} to do ten fold cross-validation}
+##' @note This function requires that the \code{\link{rms}} package is attached
 ##' @author Michael W. Kattan, Ph.D. and Changhong Yu. Department of
 ##'   Quantitative Health Sciences, Cleveland Clinic
 ##' @seealso \code{\link[rms]{cph}} \code{\link[cmprsk]{crr}}
-##'   \code{\link[QHScrnomo]{nomogram.crr}}
+##'   \code{nomogram.crr}
 ##' @references Michael W. Kattan, Glenn Heller and Murray F. Brennan (2003). A
 ##'   competing-risks nomogram for sarcoma-specific death following local
 ##'   recurrence. Statistics in Medicine. \code{Stat Med}. 2003;22:3515-3525.
@@ -50,7 +49,6 @@
 ##'            x = TRUE, y = TRUE, surv = TRUE,time.inc = 144)
 ##' prostate.crr <- crr.fit(prostate.f, cencode = 0, failcode = 1)
 ##' prostate.crr
-##'
 ##' @keywords survival multivariate
 ##'
 crr.fit <-

@@ -9,4 +9,10 @@
 library(testthat)
 library(QHScrnomo)
 
+# Run a basic model
+dd <- datadist(prostate.dat)
+options(datadist = "dd")
+mod_cph <- cph(Surv(TIME_EVENT,EVENT_DOD == 1) ~ TX, data = prostate.dat)
+mod_crr <- crr.fit(mod_cph, cencode = 0, failcode = 1)
+
 test_check("QHScrnomo")
