@@ -1,13 +1,13 @@
-#' Fit A Competing Risks Regression Model
-#'
-#' Fits a competing risks regression model using the \code{\link[cmprsk]{crr}} function from an existing \code{\link[rms]{cph}}
-#' object which can then be used to construct a nomogram.
-#'
-#' @param fit A Cox proportional hazards regression model constructed from \code{\link[rms]{cph}} (by Frank Harrell)
-#' @param cencode The value of the status column that indicates a censored observation
-#' @param failcode The value of the status column that indicates an event of interest
-#'
-#' @return Returns a list of class \code{cmprsk}, with components:
+##' Fit A Competing Risks Regression Model
+##'
+##' Fits a competing risks regression model using the \code{\link[cmprsk]{crr}} function from an existing \code{\link[rms]{cph}}
+##' object which can then be used to construct a nomogram.
+##'
+##' @param fit A Cox proportional hazards regression model constructed from \code{\link[rms]{cph}} (by Frank Harrell)
+##' @param cencode The value of the status column that indicates a censored observation
+##' @param failcode The value of the status column that indicates an event of interest
+##'
+##' @return Returns a list of class \code{cmprsk}, with components:
 ##' \item{coef }{the estimated regression coefficients}
 ##' \item{loglik }{log pseudo-liklihood evaluated at coef}
 ##' \item{lscore }{derivitives of the log pseudo-likelihood evaluated at coef}
@@ -107,6 +107,15 @@ crr.fit <-
 
     # Remove event declaration from the event call (e.g., 'status == 1'; want 'status')
     statvar <- substring(x, 1, ifelse(!event_declared, 100000, event_declared - 1))
+
+    # Find the unique status values
+    unique_statuses <- unique(data[, statvar])
+
+    # Check that the supplied codes are found in the column
+    if(!(cencode %in% unique_statuses))
+      stop(paste0("The supplied 'cencode=", cencode, "' was not found in ", statvar))
+    if(!(failcode %in% unique_statuses))
+      stop(paste0("The supplied 'failcode=", failcode, "' was not found in ", statvar))
 
     # Fit the competing risk model
     newfit <-

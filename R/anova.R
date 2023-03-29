@@ -1,20 +1,21 @@
-##' Summary of a Competing Risks Regression Model
+##' ANOVA Table for a Competing Risks Regression Model
 ##'
-##' Uses the \code{\link[rms]{summary.rms}} method to construct a summary for the competing risks regression model fit from \code{\link[QHScrnomo]{crr.fit}}.
+##' Uses the \code{\link[rms]{anova.rms}} method to construct an analysis of variance table for the competing risks regression model fit from \code{\link[QHScrnomo]{crr.fit}}.
 ##'
-##' @usage \S3method{summary}{cmprsk}(object, \dots)
+##' @usage \S3method{anova}{cmprsk}(object,\dots)
 ##'
 ##' @param object A model fit by \code{\link[QHScrnomo]{crr.fit}}
-##' @param ... Other arguments for \code{\link[rms]{summary.rms}}
+##' @param ... Not used
 ##'
-##' @return A \code{\link[rms]{summary.rms}} matrix
+##' @return An \code{\link[rms]{anova.rms}} matrix
 ##'
 ##' @note This function requires that the \code{\link{rms}} package is attached
 ##' @author Changhong Yu. Department of
-##' Quantitative Health Sciences, Cleveland Clinic
-##' @seealso \code{\link[QHScrnomo]{crr.fit}} \code{\link[rms]{summary.rms}}
+##'   Quantitative Health Sciences, Cleveland Clinic
+##' @seealso \code{\link[QHScrnomo]{crr.fit}} \code{\link[rms]{anova.rms}}
 ##'
 ##' @import rms
+##' @importFrom stats anova
 ##' @export
 ##' @examples
 ##' dd <- datadist(prostate.dat)
@@ -24,13 +25,13 @@
 ##'            RACE_AA, data = prostate.dat,
 ##'            x = TRUE, y = TRUE, surv = TRUE,time.inc = 144)
 ##' prostate.crr <- crr.fit(prostate.f, cencode = 0, failcode = 1)
-##' summary(prostate.crr)
+##' anova(prostate.crr)
 ##'
-summary.cmprsk <-
+anova.cmprsk <-
   function(
-      object, # An object fit from crr.fit
-      ...
-    ) {
+    object, # An object fit from crr.fit
+    ...
+  ) {
 
     # Check for fit
     if(missing(object))
@@ -47,7 +48,7 @@ summary.cmprsk <-
     cph.f$coefficients <- object$coef
     cph.f$var <- object$var
 
-    # Return the summary for the now 'rms' object
-    summary(cph.f, ...)
+    # Return the anova table for the now 'rms' object
+    anova(cph.f)
 
   }
