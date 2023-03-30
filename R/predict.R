@@ -94,7 +94,7 @@ predict.cmprsk <-
         # Compute the linear predictor
         lp <- sum(cov1 * object$coef)
 
-        # Compute the cumulative incidence
+        # Compute the cumulative subdistribution hazard
         lhat <- cumsum(exp(lp) * object$bfitj)
 
       # Otherwise we need to do matrix operations
@@ -103,7 +103,7 @@ predict.cmprsk <-
         # Set the matrix
         cov1 <- as.matrix(cov1)
 
-        # Make the placeholders for linear predictor and cumulative incidence (failure times X observations)
+        # Make the placeholders for linear predictor and subdistribution hazard (failure times X observations)
         lp <- matrix(0., nrow = length(object$uftime), ncol = nrow(cov1))
         lhat <- lp
 
@@ -113,7 +113,7 @@ predict.cmprsk <-
           # Compute the linear predictor
           lp[, j] <- sum(cov1[j, ] * object$coef)
 
-          # Compute the cumulative incidence
+          # Compute the cumulative subdistribution hazard
           lhat[, j] <- cumsum(exp(lp[, j]) * object$bfitj)
 
         }
@@ -132,7 +132,7 @@ predict.cmprsk <-
         # Check for a single observation (assumes 'cov2' was submitted)
         if(length(object$coef) == length(cov2)) {
 
-          # Compute the cumulative incidence for that observation
+          # Compute the cumulative subdistribution hazard for that observation
           lhat <- cumsum(exp(object$tfs %*% c(cov2 * object$coef)) * object$bfitj)
 
         # Otherwise get estimates for collection of observations
@@ -144,7 +144,7 @@ predict.cmprsk <-
           # Make a placeholder for values (failure times by observations)
           lhat <- matrix(0., nrow = length(object$uftime), ncol = nrow(cov1))
 
-          # Iterate to get the cumulative incidence for each observation
+          # Iterate to get the cumulative subdistribution hazard for each observation
           for(j in seq_len(nrow(cov2)))
             lhat[, j] <- cumsum(exp(object$tfs %*% c(cov2[j, ] * object$coef)) * object$bfitj)
 
@@ -156,7 +156,7 @@ predict.cmprsk <-
         # Check for a single observation
         if(length(object$coef) == length(cov1) + length(cov2)) {
 
-          # Compute the cumulative incidence for that observation
+          # Compute the cumulative subdistribution hazard for that observation
           lhat <- cumsum(exp(sum(cov1 * object$coef[seq_len(length(cov1))]) + object$tfs %*% c(cov2, object$coef[seq(np - length(cov2) + 1., np)])) * object$bfitj)
 
         # Other compute for all observations
@@ -169,7 +169,7 @@ predict.cmprsk <-
           # Create placeholder for values (failure times by observations)
           lhat <- matrix(0., nrow = length(object$uftime), ncol = nrow(cov1))
 
-          # Iterate to get the cumulative incidence for each observation
+          # Iterate to get the cumulative subdistribution hazard for each observation
           for(j in seq_len(nrow(cov1)))
             lhat[, j] <- cumsum(exp(sum(cov1[j, ] * object$coef[seq_len(ncol(cov1))]) + object$tfs %*% c(cov2[j, ] * object$coef[seq(np - ncol(cov2) + 1., np)])) * object$bfitj)
 
