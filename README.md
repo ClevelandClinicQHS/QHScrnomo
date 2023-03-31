@@ -32,3 +32,5 @@ Or from CRAN:
 ``` r
 install.packages("QHScrnomo")
 ```
+
+The current package on CRAN is version 2.2.0.
