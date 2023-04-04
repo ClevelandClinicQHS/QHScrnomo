@@ -17,6 +17,7 @@
 ##' @import rms
 ##' @importFrom stats anova
 ##' @export
+##'
 ##' @examples
 ##' dd <- datadist(prostate.dat)
 ##' options(datadist = "dd")
