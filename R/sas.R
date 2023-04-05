@@ -71,9 +71,9 @@ sas.cmprsk <-
 
       # If there's a file, print to that; otherwise, print to console
       if(file != "") {
-        cat("Base is ", lhat, "\n", file = file, append = append)
+        cat("Base failure probability by time =", time, "is",  lhat, "\n", file = file, append = append)
       } else {
-        cat("Base is ", lhat, "\n")
+        cat("Base failure probability by time =", time, "is",  lhat, "\n")
       }
 
     }
