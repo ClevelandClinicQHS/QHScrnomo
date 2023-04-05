@@ -57,7 +57,7 @@ Newlabels.cmprsk <-
       stop("Please supply a character vector of labels for model variables.")
 
     # Check if the object was fit from crr.fit
-    if(!methods::is(fit, "cmprsk"))
+    if(!inherits(fit, "cmprsk"))
       stop("The object is not a 'cmprsk' object fit from crr.fit")
 
     # Extract the original rms::cph model

@@ -44,7 +44,7 @@ Newlevels.cmprsk <-
       stop("Please supply a named list of character vectors with labels for categorical factor levels.")
 
     # Check if the object was fit from crr.fit
-    if(!methods::is(fit, "cmprsk"))
+    if(!inherits(fit, "cmprsk"))
       stop("The object is not a 'cmprsk' object fit from crr.fit")
 
     # Extract the original rms::cph model

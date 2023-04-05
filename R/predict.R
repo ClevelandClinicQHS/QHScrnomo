@@ -40,6 +40,14 @@ predict.cmprsk <-
     ...
   ) {
 
+    # Check for fit
+    if(missing(object))
+      stop("Please supply a model fit from crr.fit")
+
+    # Check if the object was fit from crr.fit
+    if(!inherits(object, "cmprsk"))
+      stop("The object is not a 'cmprsk' object fit from crr.fit")
+
     # Check inputs when a probability is requested
     if(!lps) {
 

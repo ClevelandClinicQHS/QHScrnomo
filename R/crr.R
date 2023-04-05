@@ -66,7 +66,7 @@ crr.fit <-
       stop("Please supply a model fit from rms::cph")
 
     # Check for the right object
-    if(!methods::is(fit, "cph"))
+    if(!inherits(fit, "cph"))
       stop("The model fit must be from rms::cph")
 
     # Check if the design was part of the the original model call (update if not)

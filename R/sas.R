@@ -46,7 +46,7 @@ sas.cmprsk <-
       stop("Please supply a model fit from crr.fit")
 
     # Check if the object was fit from crr.fit
-    if(!methods::is(f, "cmprsk"))
+    if(!inherits(f, "cmprsk"))
       stop("'f' is not a 'cmprsk' object fit from crr.fit")
 
     # Check for a time value

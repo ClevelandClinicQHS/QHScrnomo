@@ -39,7 +39,7 @@ anova.cmprsk <-
       stop("Please supply a model fit from crr.fit")
 
     # Check if the object was fit from crr.fit
-    if(!methods::is(object, "cmprsk"))
+    if(!inherits(object, "cmprsk"))
       stop("The object is not a 'cmprsk' object fit from crr.fit")
 
     # Extract the original rms::cph model

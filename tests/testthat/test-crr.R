@@ -1,6 +1,6 @@
 # Test for the assigned class of output
 test_that("The model is a cmprsk object", {
-  expect_equal(methods::is(prostate.crr, "cmprsk"), TRUE)
+  expect_equal(inherits(prostate.crr, "cmprsk"), TRUE)
 })
 
 # Test that the model was refit with the design
