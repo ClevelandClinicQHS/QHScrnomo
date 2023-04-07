@@ -11,6 +11,7 @@
 ##' @param ... Additional arguments such as \code{cov2} as in \code{\link[cmprsk]{crr}}
 ##'
 ##' @return A vector of failure probabilities for the specified time point (or linear predictors) with length equal to the number of rows in \code{newdata}
+##'
 ##' @author Michael W. Kattan, Ph.D. and Changhong Yu.\cr Department of
 ##' Quantitative Health Sciences, Cleveland Clinic
 ##' @references \code{ Fine JP and Gray RJ (1999)} A proportional hazards model
@@ -211,3 +212,89 @@ predict.cmprsk <-
     }
 
   }
+
+pred2.crr <-
+  function(f.crr, lp, time) {
+    if (time > max(f.crr$uftime)) {
+      stop("pick a smaller time!")
+    }
+    if (time < min(f.crr$uftime)) {
+      stop("pick a greater time!")
+    }
+    lhat <- cumsum(exp(lp) * f.crr$bfitj)
+    ci <- cbind(f.crr$uftime, 1. - exp(-lhat)) # cumulative incidence rate
+    ci <- ci[ci[, 1.] <= time + 1e-10, ]
+    ci <- ci[dim(ci)[1.], -1.]
+    ci
+  }
+
+pred3.crr <- function(z, cov1, cov2, time, lps = FALSE) {
+  np <- length(z$coef)
+  if (length(z$tfs) <= 1.) {
+    if (length(z$coef) == length(cov1)) {
+      lhat <- cumsum(exp(sum(cov1 * z$coef)) * z$bfitj)
+      lp <- sum(cov1 * z$coef)
+    } else {
+      cov1 <- as.matrix(cov1)
+      lhat <- matrix(0., nrow = length(z$uftime), ncol = nrow(cov1))
+      lp <- matrix(0., nrow = length(z$uftime), ncol = nrow(cov1))
+      for (j in 1.:nrow(cov1)) {
+        lhat[, j] <- cumsum(exp(sum(cov1[j, ] * z$coef)) * z$bfitj)
+        lp[, j] <- sum(cov1[j, ] * z$coef)
+      }
+      lp <- lp[1., ]
+    }
+  } else {
+    if (length(z$coef) == ncol(as.matrix(z$tfs))) {
+      if (length(z$coef) == length(cov2)) {
+        lhat <- cumsum(exp(z$tfs %*% c(cov2 * z$coef)) * z$bfitj)
+      } else {
+        cov2 <- as.matrix(cov2)
+        lhat <- matrix(
+          0.,
+          nrow = length(z$uftime),
+          ncol = nrow(cov1)
+        )
+        for (j in 1.:nrow(cov2)) {
+          lhat[, j] <- cumsum(exp(z$tfs %*% c(
+            cov2[j, ] * z$coef
+          )) * z$bfitj)
+        }
+      }
+    } else {
+      if (length(z$coef) == length(cov1) + length(cov2)) {
+        lhat <- cumsum(exp(sum(cov1 * z$coef[1.:length(
+          cov1
+        )]) + z$tfs %*% c(cov2 * z$coef[
+          (np - length(cov2) + 1.):np
+        ])) * z$
+          bfitj)
+      } else {
+        cov1 <- as.matrix(cov1)
+        cov2 <- as.matrix(cov2)
+        lhat <- matrix(
+          0.,
+          nrow = length(z$uftime),
+          ncol = nrow(cov1)
+        )
+        for (j in 1.:nrow(cov1)) {
+          lhat[, j] <-
+            cumsum(
+              exp(sum(
+                cov1[j, ] * z$coef[1.:ncol(cov1)]) + z$tfs %*%
+                  c(cov2[j, ] * z$coef[seq(
+                    (np - ncol(cov2) + 1.), np)])) *
+                z$bfitj)
+        }
+      }
+    }
+  }
+  lhat <- cbind(z$uftime, 1. - exp(-lhat))
+  lhat <- lhat[lhat[, 1.] <= time + 1e-10, ]
+  lhat <- lhat[dim(lhat)[1.], -1.]
+  if (lps) {
+    lp
+  } else {
+    lhat
+  }
+}

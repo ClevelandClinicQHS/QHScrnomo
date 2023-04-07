@@ -11,7 +11,7 @@ crr.fit(fit, cencode = 0, failcode = 1)
 
 \item{cencode}{The value of the status column that indicates a censored observation}
 
-\item{failcode}{The value of the status column that indicates an event of interest}
+\item{failcode}{The value of the status column that indicates the event of interest}
 }
 \value{
 Returns a list of class \code{cmprsk}, with components:

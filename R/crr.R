@@ -5,7 +5,7 @@
 ##'
 ##' @param fit A Cox proportional hazards regression model constructed from \code{\link[rms]{cph}} (by Frank Harrell)
 ##' @param cencode The value of the status column that indicates a censored observation
-##' @param failcode The value of the status column that indicates an event of interest
+##' @param failcode The value of the status column that indicates the event of interest
 ##'
 ##' @return Returns a list of class \code{cmprsk}, with components:
 ##' \item{coef }{the estimated regression coefficients}

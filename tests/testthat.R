@@ -18,4 +18,8 @@ prostate.f <- cph(Surv(TIME_EVENT,EVENT_DOD == 1) ~ TX  + rcs(PSA,3) +
                   x = FALSE, y = TRUE, surv = TRUE, time.inc = 144)
 prostate.crr <- crr.fit(prostate.f, cencode = 0, failcode = 1)
 
+# Fit some cumulative incidence curves
+cum <- cmprsk::cuminc(prostate.dat$TIME_EVENT, prostate.dat$EVENT_DOD, cencode = 0)
+cum2 <- cmprsk::cuminc(prostate.dat$TIME_EVENT, prostate.dat$EVENT_DOD, prostate.dat$TX, cencode = 0)
+
 test_check("QHScrnomo")
