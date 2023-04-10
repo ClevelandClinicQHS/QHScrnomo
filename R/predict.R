@@ -10,7 +10,7 @@
 ##' @param lps Should the linear predictor be returned instead of the failure probability? Defaults to \code{FALSE}.
 ##' @param ... Additional arguments such as \code{cov2} as in \code{\link[cmprsk]{crr}}
 ##'
-##' @return A vector of failure probabilities for the specified time point (or linear predictors) with length equal to the number of rows in \code{newdata}
+##' @return A vector of failure probabilities at the specified time point (or linear predictors if \code{lps=TRUE}) with length equal to the number of rows in \code{newdata}
 ##'
 ##' @author Michael W. Kattan, Ph.D. and Changhong Yu.\cr Department of
 ##' Quantitative Health Sciences, Cleveland Clinic
@@ -30,13 +30,13 @@
 ##'            RACE_AA, data = prostate.dat,
 ##'            x = TRUE, y = TRUE, surv = TRUE,time.inc = 144)
 ##' prostate.crr <- crr.fit(prostate.f, cencode = 0, failcode = 1)
-##' prostate.dat$pred.60 <- predict(prostate.crr, time = 60)
+##' predict(prostate.crr, time = 60)
 ##'
 predict.cmprsk <-
   function(
     object, # An object fit from crr.fit
     newdata = NULL, # Data frame to get predictions on
-    time, # The time for evaluating probability
+    time = NULL, # The time for evaluating probability
     lps = FALSE, # Should the linear predictor be returned instead of a probability?
     ...
   ) {
@@ -53,7 +53,7 @@ predict.cmprsk <-
     if(!lps) {
 
       # Check for a time point
-      if(missing(time))
+      if(is.null(time))
         stop("Please specify the time point for computing the failure probability.")
 
       # Check for multiple times
@@ -74,6 +74,17 @@ predict.cmprsk <-
       # Check for too small of a time point
       if(time < min(object$uftime))
         stop(paste0("'time=", time, "' is smaller than the minimum observed failure time ", min(object$uftime), ". Please select a larger time value."))
+
+    } else {
+
+      # Check for time-dependent terms
+      if(length(object$tfs) > 1.)
+        stop("There are time-dependent terms present. Cannot return linear-predictor only. Please rerun with 'lps=FALSE' and specify a 'time' value.")
+
+      # Check for a time value
+      if(!is.null(time))
+        warning("Since 'lps=TRUE', the time argument was disregarded.")
+
     }
 
     # Get the design matrix to evaluate the model on

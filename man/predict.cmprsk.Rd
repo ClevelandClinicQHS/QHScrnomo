@@ -18,7 +18,7 @@
 \item{...}{Additional arguments such as \code{cov2} as in \code{\link[cmprsk]{crr}}}
 }
 \value{
-A vector of failure probabilities for the specified time point (or linear predictors) with length equal to the number of rows in \code{newdata}
+A vector of failure probabilities at the specified time point (or linear predictors if \code{lps=TRUE}) with length equal to the number of rows in \code{newdata}
 }
 \description{
 Computes the predicted probability of the event of interest at a specified time point for a competing risks regression model fit by \code{\link[QHScrnomo]{crr.fit}}. This function is adapted from \code{\link[cmprsk]{predict.crr}}.
@@ -31,7 +31,7 @@ prostate.f <- cph(Surv(TIME_EVENT,EVENT_DOD == 1) ~ TX  + rcs(PSA,3) +
            RACE_AA, data = prostate.dat,
            x = TRUE, y = TRUE, surv = TRUE,time.inc = 144)
 prostate.crr <- crr.fit(prostate.f, cencode = 0, failcode = 1)
-prostate.dat$pred.60 <- predict(prostate.crr, time = 60)
+predict(prostate.crr, time = 60)
 
 }
 \references{
