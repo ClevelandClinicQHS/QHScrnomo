@@ -26,3 +26,5 @@ Depends:
     R (>= 3.5.0),
     rms
 LazyData: true
+URL: https://github.com/ClevelandClinicQHS/QHScrnomo
+BugReports: https://github.com/ClevelandClinicQHS/QHScrnomo/issues
