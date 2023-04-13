@@ -112,8 +112,6 @@ crr.fit <-
     unique_statuses <- unique(data[, statvar])
 
     # Check that the supplied codes are found in the column
-    if(!(cencode %in% unique_statuses))
-      stop(paste0("The supplied 'cencode=", cencode, "' was not found in ", statvar))
     if(!(failcode %in% unique_statuses))
       stop(paste0("The supplied 'failcode=", failcode, "' was not found in ", statvar))
 

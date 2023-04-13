@@ -3,7 +3,7 @@ test_that("An error is thrown for not supplying a time point of interest", {
   expect_error(groupci(prostate.dat$PSA, prostate.dat$TIME_EVENT, prostate.dat$EVENT_DOD))
 })
 test_that("An error is thrown for specifying invalid event codes", {
-  expect_error(groupci(prostate.dat$PSA, prostate.dat$TIME_EVENT, prostate.dat$EVENT_DOD, u = 120, cencode = 10))
+  expect_error(groupci(prostate.dat$PSA, prostate.dat$TIME_EVENT, prostate.dat$EVENT_DOD, u = 120, failcode = 10))
 })
 test_that("An error is thrown for having unequal input lengths", {
   expect_error(groupci(prostate.dat$PSA, prostate.dat$TIME_EVENT, prostate.dat$EVENT_DOD[-1], u = 120))

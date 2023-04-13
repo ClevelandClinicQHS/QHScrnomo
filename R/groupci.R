@@ -105,8 +105,6 @@ groupci <-
 
     # Check that the supplied codes are found in the inputs
     unique_statuses <- unique(fstatus)
-    if(!(cencode %in% unique_statuses))
-      stop(paste0("The supplied 'cencode=", cencode, "' was not found in 'fstatus'"))
     if(!(failcode %in% unique_statuses))
       stop(paste0("The supplied 'failcode=", failcode, "' was not found in 'fstatus'"))
 

@@ -12,6 +12,3 @@ test_that("The design (x) was added", {
 test_that("The supplied 'failcode' value must be in the status column", {
   expect_error(crr.fit(prostate.f, cencode = 0, failcode = 5))
 })
-test_that("The supplied 'cencode' value must be in the status column", {
-  expect_error(crr.fit(prostate.f, cencode = -1, failcode = 2))
-})
