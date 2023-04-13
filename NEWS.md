@@ -10,18 +10,23 @@
 * Removed the `pred.crr` function from the package. This function was not previously exported or used, and was highly duplicative of `predict.cmprsk`. Nevertheless, it is no longer in the package.
 * Removed .Rd files for functions that are not exported (`addOffset4ModelFrame`, `nomo2.crr`, `pred2.crr`, `pred3.crr`, `predictDesign`)
 * Changed the default argument for `failcode` in `pred.ci` to `failcode=1` to match `cmprsk::crr` and `QHScrnomo::crr.fit`
-* Set the default argument for `time` in `tenf.crr` and `predict.crr` to `time=NULL`
+* Set the default argument for `time` in `tenf.crr` and `predict.crr` to `time=NULL`; also set default arguments for `g`, `cuts`, `xlab`, `ylab` arguments in `groupci`
 * Added the `trace` argument to `tenf.crr` to _optionally_ trace the process in the console. It still does it by default, but previously it always traced it with no option to turn it off.
+* In `groupci`, the `ci` argument allows the user to control whether we work on the scale of _survival_ or _failure_ (default) probabilities. When the argument was set to `FALSE`, this would apply a `1-value` operation to _both_ the within-group cumulative incidence estimate (to convert to survival) _and_ the group-level mean (of `x`). However, `x` is supposed to be an arbitrary continuous variable that we can assess calibration for, not necessarily a probability. Therefore, the change made in this version is to _only_ apply the `1-value` transformation to the within-group cumulative incidence and _not_ the group level mean for `x`. 
+  + To retain the same behavior when a probability is entered for `x`, simply pass `1-x` into the function call. 
+  + Users can also use the **new** `a` and `b` arguments (for the intercept and slope, respectively), as well as `ab`, `xlim`, and `ylim` arguments to adjust the graph accordingly. 
 
 ## Minor improvements or bug fixes
 
 * Added more comprehensive error-handling throughout with more informative messaging:
   + Checking for the appropriate input objects in (almost) all functions
-  + Checking for the appropriate time point inputs in `predict.cmprsk`, `sas.cmprsk`, `pred.ci`, `tenf.crr`
-  + Other miscellaneous warnings and/or errors
+  + Checking for the appropriate time point inputs in `predict.cmprsk`, `sas.cmprsk`, `pred.ci`, `tenf.crr`, `groupci`
+  + Other miscellaneous warnings and/or errors (see unit tests)
 * Added a unit testing suite via `testthat`
 * Changed, edited, and/or rewrote most (if not all) function documentation text (.Rd files) to be more descriptive and provide more context
-  
+* Removed definition and usage of the `oldUnclass` utility (internal) function. It's definition was `function(x) unclass(x)`, so we just use `unclass(x)` instead.
+* In `groupci`, the user is now able to supply `xlab = ""` as an argument. Also removed the usage of `single` in the function definition in favor of `double` as the former is only to be used in the context of `.C/.Fortran` (per documentation), which is not the case here.
+
 ## Historical changes
 
 Adding historical change-tracking here that was included in the previous version's NEWS file (2.2.0) (in reverse order), but in a Markdown-friendly format:

@@ -87,7 +87,7 @@ pred.ci <-
           lhat <- cbind(this_cum$time, this_cum$est, this_cum$var)
 
           # Keep rows up to the desired time point
-          lhat <- lhat[lhat[,1] < tm1, ]
+          lhat <- matrix(lhat[lhat[,1] < tm1, ], ncol = 3)
 
           # Now only keep the row closest to the desired time point
           lhat <- lhat[nrow(lhat), ]

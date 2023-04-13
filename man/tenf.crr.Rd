@@ -35,7 +35,7 @@ tenf.crr(prostate.crr, time = 120, fold = 3)
 
 }
 \seealso{
-\code{\link[QHScrnomo]{crr.fit}}, \code{\link[cmprsk]{crr}}
+\code{\link[QHScrnomo]{crr.fit}} \code{\link[cmprsk]{crr}}
 }
 \author{
 Changhong Yu, Michael Kattan, Ph.D \cr Department of Quantitative

@@ -12,7 +12,7 @@
 ##'
 ##' @author Changhong Yu, Michael Kattan, Ph.D \cr Department of Quantitative
 ##'   Health Sciences\cr Cleveland Clinic\cr
-##' @seealso \code{\link[QHScrnomo]{crr.fit}}, \code{\link[cmprsk]{crr}}
+##' @seealso \code{\link[QHScrnomo]{crr.fit}} \code{\link[cmprsk]{crr}}
 ##' @keywords models survival
 ##'
 ##' @export
