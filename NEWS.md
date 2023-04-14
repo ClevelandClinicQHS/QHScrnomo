@@ -6,7 +6,7 @@
 * Changed dependency structure to only use the minimal necessary (see DESCRIPTION)
   + `rms` is now the only package that `QHScrnomo` "Depends" on (i.e., it will be loaded when this package is loaded)
   + `cmprsk` and `Hmisc` have been moved to the "Imports" field and are accessed internally with the `pkg::func` format. Therefore, users should _not_ expect these packages to load with `QHScrnomo` (though they are required to be installed).
-* Changed the output of `sas.cmprsk` to print the base _failure_ probability (`1 - exp(-cumsum(f$bfitj)`) when `baseonly=TRUE` instead of the _survival_ probability (`exp(-cumsum(f$bfitj)`)
+* Changed the output of `sas.cmprsk` to print the base _failure_ probability (`1 - exp(-cumsum(f$bfitj)`) when the `time` argument is used instead of the _survival_ probability (`exp(-cumsum(f$bfitj)`)
 * Removed the `pred.crr` function from the package. This function was not previously exported or used, and was highly duplicative of `predict.cmprsk`. Nevertheless, it is no longer in the package.
 * Removed .Rd files for functions that are not exported (`addOffset4ModelFrame`, `nomo2.crr`, `pred2.crr`, `pred3.crr`, `predictDesign`)
 * Changed the default argument for `failcode` in `pred.ci` to `failcode=1` to match `cmprsk::crr` and `QHScrnomo::crr.fit`
@@ -20,12 +20,16 @@
 
 * Added more comprehensive error-handling throughout with more informative messaging:
   + Checking for the appropriate input objects in (almost) all functions
-  + Checking for the appropriate time point inputs in `predict.cmprsk`, `sas.cmprsk`, `pred.ci`, `tenf.crr`, `groupci`
+  + Checking for the appropriate time point inputs in `predict.cmprsk`, `sas.cmprsk`, `pred.ci`, `tenf.crr`, `groupci`, `nomogram.crr`
   + Other miscellaneous warnings and/or errors (see unit tests)
 * Added a unit testing suite via `testthat`
 * Changed, edited, and/or rewrote most (if not all) function documentation text (.Rd files) to be more descriptive and provide more context
 * Removed definition and usage of the `oldUnclass` utility (internal) function. It's definition was `function(x) unclass(x)`, so we just use `unclass(x)` instead.
 * In `groupci`, the user is now able to supply `xlab = ""` as an argument. Also removed the usage of `single` in the function definition in favor of `double` as the former is only to be used in the context of `.C/.Fortran` (per documentation), which is not the case here.
+* In `nomogram.crr`, changed some arguments:
+  + Removed the `NULL` default for `failtime` to make it more clear that this is a required argument
+* Majority of internal/utility functions are used in `nomogram.crr` and `nomogram.mk6`. Moved short utility functions to be housed in `R/nomogram.R` directly (`nomo2.crr`, `is.category`, `getOldDesign`, `Design.levels`, `value.chk`, `axisf`)
+  + Still maintaining separate files in `R/` for `Getlim`, `predictDesign` (contains `addOffset4ModelFrame`), `Varcov`
 
 ## Historical changes
 
