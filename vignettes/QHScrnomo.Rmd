@@ -1,0 +1,234 @@
+---
+title: "QHScrnomo"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{QHScrnomo}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  comment = "#>"
+)
+```
+
+# Introduction
+
+The `QHScrnomo` package provides functions for fitting, validating, and generating predictions from competing risks regression models, with an emphasis on [nomograms](https://en.wikipedia.org/wiki/Nomogram). Nomograms allow multivariable models to be translated into a diagram that can be easily implemented into clinical workflows for healthcare practitioners to quickly provide individualized risk estimates for patient outcomes of interest (e.g., death from cancer) while accounting for potential competing events (e.g, death from other causes) to help aid clinical decision making. This vignette will walk through an example workflow for constructing a nomogram.
+
+First, we'll load the package:
+
+```{r setup}
+library(QHScrnomo)
+```
+
+# Example Data Set 
+
+We'll be using the `prostate.dat` data set throughout. This is an artificial data set meant to represent patients with prostate cancer undergoing 1 of 3 treatments. The patients are followed for some period of time until they experience death from prostate cancer (the event of interest), death from _other_ causes, or they are still alive and therefore censored. The data set consists of `r nrow(prostate.dat)` observations, each representing a patient, with the following `r ncol(prostate.dat)` columns:
+
+* `UNIQUEID`: Unique patient identifier
+* `TX`: Treatment received for prostate cancer (`EBRT`, `PI`, or `RP`)
+* `PSA`: Pre-treatment prostate-specific antigen (PSA) levels (ng/mL)
+* `BX_GLSN_CAT`: Biopsy [Gleason Score](https://blog.virginiacancer.com/understanding-the-prostate-biopsy-gleason-score). A factor with levels 1 (score 2-6), 2 (score 7), and 3 (score 8-10)
+* `CLIN_STG`: Clinical stage of cancer (`T1`, `T2`, `T3`)
+* `AGE`: Age of patient on the date of treatment
+* `RACE_AA`: Patient race where `1` = African American, and `0` is Other
+* `TIME_EVENT`: Event time or follow-up time
+* `EVENT_DOD`: Event status. `1` = patient died of prostate cancer, `2` = patient died of other causes, `0` = patient did not die and therefore was censored
+
+```{r}
+str(prostate.dat)
+```
+
+# Steps to construct a nomogram
+
+The following steps show how to build a competing risks regression model and construct a nomogram with it.
+
+## 1. Fit a competing risks regression model
+
+To start, we first want to create a competing risks regression model. Our package heavily utilizes the model building procedures and utilities in the `rms` package, so the first step is to create a Cox Proportional-Hazards model for the event of interest (death from prostate cancer) from the `rms::cph` function using the preferred workflow:
+
+```{r}
+# Register the data set
+dd <- datadist(prostate.dat)
+options(datadist = "dd")
+
+# Fit the Cox-PH model for the event of interest
+prostate.f <- cph(Surv(TIME_EVENT,EVENT_DOD == 1) ~ TX  + rcs(PSA,3) +
+           BX_GLSN_CAT + CLIN_STG + rcs(AGE,3) +
+           RACE_AA, data = prostate.dat,
+           x = TRUE, y= TRUE, surv=TRUE, time.inc = 144)
+prostate.f
+```
+
+Then we can call `crr.fit`. This function takes the `rms::cph` fit and uses the `cmprsk::crr` function to convert it to a competing risks regression model, while maintaining attributes from the original fit.
+
+```{r}
+# Refit to a competing risks regression
+prostate.crr <- crr.fit(prostate.f, cencode = 0, failcode = 1)
+prostate.crr
+```
+
+## 2. Summarize and assess model output
+
+We can see that the model object above is of class `cmprsk`. 
+
+```{r}
+class(prostate.crr)
+```
+
+We have created generic methods to assess output:
+
+* The `summary.cmprsk` method utilizes `summary.rms` to flexibly summarize model effects and contrasts. 
+```{r}
+summary(prostate.crr)
+```
+
+<br>
+
+* The `anova.cmprsk` method utilizes `anova.rms` to test for statistical significance of model terms. 
+
+```{r}
+anova(prostate.crr)
+```
+
+<br>
+
+Obviously there is a lot of work that would go into determining that we have the right model specifications, covariates, term specifications, etc. We'll assume that the current model is the one we are moving forward with. See the `cmprsk` package to learn more about the competing risks modeling framework used here, how to interpret parameters, etc.
+
+## 3. Validate model predictions
+
+Suppose we are particularly interested in accurately predicting the _10-year_ risk of death from prostate cancer.
+
+```{r}
+time_of_interest <- 120 # In months, so 10 years
+```
+
+### Generate cross-validated predictions 
+
+First, we can use the `tenf.crr` function to generate K-fold cross-validated predictions for each observation in the development data set. The default is to set `fold=10` for 10-fold cross-validation, so we'll leave it at that:
+
+```{r}
+set.seed(123)
+prostate.dat$preds.tenf <- tenf.crr(prostate.crr, time = time_of_interest)
+str(prostate.dat$preds.tenf)
+```
+
+This vector shows us, for each patient, the estimated (out of sample) probability of death from prostate cancer given the covariates in the model, adjusting for the possibility of death from other causes as a competing event.
+
+### Compute the concordance index (C-Index)
+
+The `cindex` function computes the _concordance index_ for binary, time-to-event, or competing risks outcomes. In this case, we are interested in the competing risks version, which utilizes the event times, and only considers pairwise comparisons involving those with the event of interest when testing for concordance. 
+
+For example, if Patient A experienced the event of interest at 5 years and Patient B experienced the event of interest at 10 years, the algorithm checks to see if the predicted risk for Patient A is larger than that of Patient B--in which case they would be considered concordant. There are similar comparisons if one of the patients had a different event status. However, if Patient A nor Patient B experienced the event of interest (i.e., they either experienced a competing event or were censored), they would not be compared.
+
+```{r}
+cindex(
+  prob = prostate.dat$preds.tenf,
+  fstatus = prostate.dat$EVENT_DOD,
+  ftime = prostate.dat$TIME_EVENT,
+  type = "crr",
+  failcode = 1
+)
+```
+
+The output displays the number of observations (in the original input `N`, and those used `n`), the number of pairwise comparisons made (`usable`), the number of concordant pairs (`concordant`), and the concordance index (`cindex`), which is the proportion of the usable pairs that were concordant. The C-index ranges from 0.50, a coin flip, to 1, perfect discrimination. In this case, our model has relatively poor discrimination ability.
+
+### Assess model calibration
+
+We can also assess how _calibrated_ our model predictions are by comparing the predicted probabilities from the model to the actual event rate observed. The `groupci` function does this by breaking up the input risk distribution into groups (e.g., by quantiles, user-defined groups, etc.) and computing the observed cumulative incidence within each group at the time point in which the predictions were made for. The goal is for these quantities to follow 45-degree line such that the risks produced by the models align with the true rates at which events occur.
+
+```{r fig.width=5, fig.height=5}
+groupci(
+  x = prostate.dat$preds.tenf,
+  ftime = prostate.dat$TIME_EVENT,
+  fstatus = prostate.dat$EVENT_DOD,
+  g = 10, # Deciles
+  u = time_of_interest,
+  failcode = 1,
+  xlab = "Predicted 10-year prostate cancer-specific mortality",
+  ylab = "Actual 10-year prostate cancer-specific mortality"
+)
+```
+
+There might be some evidence that our model slightly overestimates the actual risk of 10-year prostate cancer-specific mortality for those most at risk.
+
+## 4. Create the nomogram
+
+Once the model is built, validated, and ready to use in practice, we can construct the nomogram. The `nomogram.crr` function takes our original model fit and maps it to a diagram that allows it to be printed and used in a clinical (or any other) setting to quickly "plug-in" model covariates and generate a risk estimate.
+
+```{r fig.width=7, fig.height=6}
+# Set some nice display labels (also see ?Newlevels)
+prostate.g <-
+  Newlabels(
+    fit = prostate.crr,
+    labels = 
+      c(
+        TX = "Treatment options",
+        PSA = "PSA (ng/mL)",
+        BX_GLSN_CAT = "Biopsy Gleason Score Sum",
+        CLIN_STG = "Clinical Stage",
+        AGE = "Age (Years)",
+        RACE_AA = "Race"
+      )
+  )
+
+# Construct the nomogram
+nomogram.crr(
+  fit = prostate.g,
+  failtime = time_of_interest,
+  lp = FALSE,
+  xfrac = 0.65,
+  fun.at = seq(0.2, 0.45, 0.05),
+  funlabel = "Predicted 10-year risk"
+)
+```
+
+It is a point system-based diagram in which we can extract the individual contribution of each risk factor (top axis), then add them up to obtain the final risk estimate (using the "Total Points" axis, then drawing a line straight down to the risk axis). Also notice that even with non-linear terms in the original model, they are able to be displayed with axes adjusted accordingly. Interactions can be handled as well.
+
+# Other functions
+
+## Generate the model equation
+
+It may be of interest to extract the model equation in a programmatically-usable format to, for example, hard-code into an application for automated model evaluation. The `sas.cmprsk` function provides this functionality, given the original model fit and (optionally) the desired time horizon. 
+
+```{r}
+sas.cmprsk(prostate.crr, time = time_of_interest)
+```
+
+The bulk of the output reflects the predicted model value on the _linear predictor_ scale once a set of covariate values are entered (see `?cmprsk::crr`). Since we've entered a value in the `time` argument, we also get the _base_ failure probability at that time horizon, which is the result of plugging in `0` for all covariate values and transforming the prediction to the cumulative incidence scale. These together can then be used to calculate the probability estimate for an arbitrary set of covariate values (once evaluated). Notice that the formula also handles the non-linear terms that were modeled using restricted cubic splines by capturing the knot positions, so that all the user needs to "plug-in" is the covariate value on the original scale.
+
+## Create "nice" output from `cuminc`
+
+The `cmprsk::cuminc` function computes the cumulative incidence for competing events. The `pred.ci` function uses its output to construct a `data.frame` of the cumulative incidence estimates at a desired time horizon and event cause of interest. 
+
+```{r}
+# Get the cuminc object
+cum <- 
+  cmprsk::cuminc(
+    ftime = prostate.dat$TIME_EVENT, 
+    fstatus = prostate.dat$EVENT_DOD, 
+    group = prostate.dat$TX,
+    cencode = 0
+  )
+
+# Extract "nice" output at a time point of interest
+pred.ci(cum, tm1 = time_of_interest, failcode = 1)
+```
+
+## Calculate predicted probabilities
+
+The `predict` function is a method for a `cmprsk` object to generate predicted values at a desired time horizon (see `?predict.cmprsk`). 
+
+```{r}
+prostate.dat$pred.120 <- predict(prostate.crr, time = time_of_interest)
+str(prostate.dat$pred.120)
+```
+
+By default, the function used the model development data set to get predicted values, but the `newdata` argument allows the user to specify new records containing the model covariates.
+
+
