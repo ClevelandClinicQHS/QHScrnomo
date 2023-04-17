@@ -21,9 +21,7 @@ knitr::opts_chunk$set(
 ![CRAN\_Download\_Counter](http://cranlogs.r-pkg.org/badges/grand-total/QHScrnomo)
 <!-- badges: end -->
 
-_The package source is currently in the process of being migrated to this page._
-
-The goal of `QHScrnomo` is to provide functionality to construct nomograms for competing risks regression models.
+[Nomograms](https://en.wikipedia.org/wiki/Nomogram) serve as practical, useful tools and communication devices in the context of clinical decision making that enable clinicians to quickly understand and gauge individual patients' risk of outcomes from (potentially) complex statistical models. The goal of `QHScrnomo` is to provide functionality to construct [nomograms](https://rdrr.io/cran/rms/man/nomogram.html) in the context of time-to-event (survival) analysis in the [presence of competing risks](https://www.tandfonline.com/doi/abs/10.1080/01621459.1999.10474144). It also contains functions to build, validate, and summarize these models.
 
 ## Installation
 
@@ -37,4 +35,87 @@ Or from CRAN:
 ``` r
 install.packages("QHScrnomo")
 ```
-The current package on CRAN is version 2.2.0.
+### Dependencies
+
+This package has its most prominent dependencies on the [`rms`](https://cran.r-project.org/web/packages/rms/index.html) package. In fact, it actually _Depends_ on it (see `DESCRIPTION`), so that package will load with `QHScrnomo`. It also makes heavy usage of [`cmprsk`](https://cran.r-project.org/web/packages/cmprsk/index.html) and [`Hmisc`](https://cran.r-project.org/web/packages/Hmisc/index.html) (which comes with `rms`). All methodology implemented here comes from these packages, so they should serve as a resource to further understand what is happening behind the scenes of `QHScrnomo`.
+
+## Example
+
+The following is an example of how to construct a nomogram from a competing risks regression model. First, we'll load the package.
+
+```{r example}
+library(QHScrnomo)
+```
+
+### 1. Fit the regression model
+
+Start by fitting a Cox proportional-hazards model.
+
+```{r}
+# Register the data set
+dd <- datadist(prostate.dat)
+options(datadist = "dd")
+
+# Fit the Cox-PH model for prostate cancer-specific mortality
+prostate.f <- cph(Surv(TIME_EVENT,EVENT_DOD == 1) ~ TX  + rcs(PSA,3) +
+           BX_GLSN_CAT + CLIN_STG + rcs(AGE,3) +
+           RACE_AA, data = prostate.dat,
+           x = TRUE, y= TRUE, surv=TRUE, time.inc = 144)
+```
+
+Then convert (adjust) it to account for the presence of competing risks.
+
+```{r}
+# Refit to a competing risks regression to account for death from other causes
+prostate.crr <- crr.fit(prostate.f, cencode = 0, failcode = 1)
+anova(prostate.crr)
+```
+
+### 2. Validate model output
+
+We can generate cross-validated risk predictions at particular time horizon of interest.
+
+```{r}
+# Generate the cross-validated probability of the event of interest
+set.seed(123)
+prostate.dat$preds.tenf <- tenf.crr(prostate.crr, time = 120, trace = FALSE) # 120 = 10 years
+str(prostate.dat$preds.tenf)
+```
+
+And then check the _discrimination_ of those probabilities via the _concordance index_.
+
+```{r}
+with(prostate.dat, cindex(preds.tenf, EVENT_DOD, TIME_EVENT, type = "crr"))["cindex"]
+```
+
+### 3. Construct the nomogram
+
+Finally, build the nomogram that can be used to quickly generate model predictions manually.
+
+```{r nomogram, fig.width=7, fig.height=6}
+# Set some nice display labels (also see ?Newlevels)
+prostate.g <-
+  Newlabels(
+    fit = prostate.crr,
+    labels = 
+      c(
+        TX = "Treatment options",
+        PSA = "PSA (ng/mL)",
+        BX_GLSN_CAT = "Biopsy Gleason Score Sum",
+        CLIN_STG = "Clinical Stage",
+        AGE = "Age (Years)",
+        RACE_AA = "Race"
+      )
+  )
+
+# Construct the nomogram
+nomogram.crr(
+  fit = prostate.g,
+  failtime = 120,
+  lp = FALSE,
+  xfrac = 0.65,
+  fun.at = seq(0.2, 0.45, 0.05),
+  funlabel = "Predicted 10-year risk"
+)
+```
+
