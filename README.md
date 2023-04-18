@@ -42,14 +42,14 @@ install.packages("QHScrnomo")
 ### Dependencies
 
 This package has its most prominent dependencies on the
-[`rms`](https://cran.r-project.org/web/packages/rms/index.html) package.
-In fact, it actually *Depends* on it (see `DESCRIPTION`), so that
-package will load with `QHScrnomo`. It also makes heavy usage of
-[`cmprsk`](https://cran.r-project.org/web/packages/cmprsk/index.html)
-and [`Hmisc`](https://cran.r-project.org/web/packages/Hmisc/index.html)
-(which comes with `rms`). All methodology implemented here comes from
-these packages, so they should serve as a resource to further understand
-what is happening behind the scenes of `QHScrnomo`.
+[`rms`](https://CRAN.R-project.org/package=rms) package. In fact, it
+actually *Depends* on it (see `DESCRIPTION`), so that package will load
+with `QHScrnomo`. It also makes heavy usage of
+[`cmprsk`](https://CRAN.R-project.org/package=cmprsk) and
+[`Hmisc`](https://CRAN.R-project.org/package=Hmisc) (which comes with
+`rms`). All methodology implemented here comes from these packages, so
+they should serve as a resource to further understand what is happening
+behind the scenes of `QHScrnomo`.
 
 ## Example
 
@@ -115,7 +115,7 @@ anova(prostate.crr)
 
 ### 2. Validate model output
 
-We can generate cross-validated risk predictions at particular time
+We can generate cross-validated risk predictions at a particular time
 horizon of interest.
 
 ``` r
@@ -126,7 +126,7 @@ str(prostate.dat$preds.tenf)
 #>  num [1:2000] 0.374 0.376 0.277 0.372 0.394 ...
 ```
 
-And then check the *discrimination* of those probabilities via the
+And then check the discrimination of those probabilities via the
 *concordance index*.
 
 ``` r
@@ -137,8 +137,8 @@ with(prostate.dat, cindex(preds.tenf, EVENT_DOD, TIME_EVENT, type = "crr"))["cin
 
 ### 3. Construct the nomogram
 
-Finally, build the nomogram that can be used to quickly generate model
-predictions manually.
+Finally, we can build the nomogram that can be used to quickly generate
+model predictions manually.
 
 ``` r
 # Set some nice display labels (also see ?Newlevels)

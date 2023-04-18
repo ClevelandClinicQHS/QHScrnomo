@@ -35,7 +35,7 @@
 ##' prostate.crr <- crr.fit(prostate.f, cencode = 0, failcode = 1)
 ##'
 ##' # Cross-validated predictions
-##' prostate.dat$preds.cv.prostate.crr.120 <- tenf.crr(prostate.crr, time = 120, fold = 3)
+##' prostate.dat$preds.cv.prostate.crr.120 <- tenf.crr(prostate.crr, time = 120, fold = 2)
 ##'
 ##' ## calculate the competing-risks version of concordance index
 ##' with(prostate.dat, cindex(preds.cv.prostate.crr.120,
