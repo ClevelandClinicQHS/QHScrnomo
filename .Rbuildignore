@@ -4,3 +4,6 @@
 ^README\.Rmd$
 ^\.Rhistory$
 ^\.DS_Store$
+^cran-comments\.md$
+^revdep$
+^CRAN-SUBMISSION$
