@@ -74,7 +74,7 @@ crr.fit <-
       fit <- stats::update(fit, x = TRUE)
 
     # Retrieve the data set from the original model that is loaded into memory
-    thedata <- get(paste(as.list(fit$call)$data))
+    thedata <- as.data.frame(get(paste(as.list(fit$call)$data)))
 
     # Check if a subset of data was used in the original fit
     if(is.null(as.list(fit$call)$subset)) {

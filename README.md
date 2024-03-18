@@ -18,11 +18,9 @@ decision making that enable clinicians to quickly understand and gauge
 individual patients’ risk of outcomes from (potentially) complex
 statistical models. The goal of `QHScrnomo` is to provide functionality
 to construct [nomograms](https://rdrr.io/cran/rms/man/nomogram.html) in
-the context of time-to-event (survival) analysis in the [presence of
-competing
-risks](https://www.tandfonline.com/doi/abs/10.1080/01621459.1999.10474144).
-It also contains functions to build, validate, and summarize these
-models.
+the context of time-to-event (survival) analysis in the presence of
+competing risks. It also contains functions to build, validate, and
+summarize these models.
 
 ## Installation
 
