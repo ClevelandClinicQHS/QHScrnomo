@@ -1,6 +1,6 @@
 Package: QHScrnomo
 Title: Construct Nomograms for Competing Risks Regression Models
-Version: 3.0.1
+Version: 3.0.1.9000
 Authors@R: c(
     person("Michael", "Kattan", email = "kattanm@ccf.org", role = "aut"),
     person("Changhong", "Yu", email = "yuc@ccf.org", role = "aut"),
