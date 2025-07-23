@@ -1,4 +1,4 @@
-# QHScrnomo (development version)
+# QHScrnomo 3.1.0
 
 # QHScrnomo 3.0.1
 
