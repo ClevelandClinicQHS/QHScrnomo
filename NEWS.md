@@ -1,3 +1,5 @@
+# QHScrnomo (development version)
+
 # QHScrnomo 3.0.2
 
 * HTML documentation issue
