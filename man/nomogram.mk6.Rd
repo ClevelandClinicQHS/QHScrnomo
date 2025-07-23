@@ -302,6 +302,6 @@ of a diagnostic or prognostic function.  Meth. Inform. Med. 17:127--129;
 Wikipedia: Nomogram, \url{https://en.wikipedia.org/wiki/Nomogram}.
 }
 \seealso{
-\code{\link[QHScrnomo]{nomogram.crr}} \code{\link{rms}} \code{\link[rms]{nomogram}} \code{\link{plot.summary.rms}} \code{\link{axis}} \code{\link{pretty}} \code{\link{approx}}
+\code{\link[QHScrnomo]{nomogram.crr}} \code{\link[rms]{rms}} \code{\link[rms]{nomogram}} \code{\link[rms]{plot.summary.rms}} \code{\link[graphics]{axis}} \code{\link{pretty}} \code{\link[stats]{approx}}
 }
 \keyword{graphics}

@@ -9,7 +9,7 @@
 ##'
 ##' @return An \code{\link[rms]{anova.rms}} matrix
 ##'
-##' @note This function requires that the \code{\link{rms}} package is attached
+##' @note This function requires that the \code{\link[rms]{rms}} package is attached
 ##' @author Changhong Yu. Department of
 ##'   Quantitative Health Sciences, Cleveland Clinic
 ##' @seealso \code{\link[QHScrnomo]{crr.fit}} \code{\link[rms]{anova.rms}}

@@ -513,7 +513,7 @@ nomogram.crr <-
 ##'
 ##' Wikipedia: Nomogram, \url{https://en.wikipedia.org/wiki/Nomogram}.
 ##'
-##' @seealso \code{\link[QHScrnomo]{nomogram.crr}} \code{\link{rms}} \code{\link[rms]{nomogram}} \code{\link{plot.summary.rms}} \code{\link{axis}} \code{\link{pretty}} \code{\link{approx}}
+##' @seealso \code{\link[QHScrnomo]{nomogram.crr}} \code{\link[rms]{rms}} \code{\link[rms]{nomogram}} \code{\link[rms]{plot.summary.rms}} \code{\link[graphics]{axis}} \code{\link{pretty}} \code{\link[stats]{approx}}
 ##'
 ##' @keywords graphics
 ##'

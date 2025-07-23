@@ -18,7 +18,7 @@ A \code{\link[rms]{summary.rms}} matrix
 Uses the \code{\link[rms]{summary.rms}} method to construct a summary for the competing risks regression model fit from \code{\link[QHScrnomo]{crr.fit}}.
 }
 \note{
-This function requires that the \code{\link{rms}} package is attached
+This function requires that the \code{\link[rms]{rms}} package is attached
 }
 \examples{
 dd <- datadist(prostate.dat)

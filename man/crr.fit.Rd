@@ -43,7 +43,7 @@ Fits a competing risks regression model using the \code{\link[cmprsk]{crr}} func
 object which can then be used to construct a nomogram.
 }
 \note{
-This function requires that the \code{\link{rms}} package is attached
+This function requires that the \code{\link[rms]{rms}} package is attached
 }
 \examples{
 dd <- datadist(prostate.dat)

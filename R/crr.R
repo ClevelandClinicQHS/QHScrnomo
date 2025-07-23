@@ -30,7 +30,7 @@
 ##' \item{cphdat}{data used for cph model, where all
 ##'   predictors are represented in numeric format, which is used by function
 ##'   \code{tenf.crr} to do ten fold cross-validation}
-##' @note This function requires that the \code{\link{rms}} package is attached
+##' @note This function requires that the \code{\link[rms]{rms}} package is attached
 ##' @author Michael W. Kattan, Ph.D. and Changhong Yu. Department of
 ##'   Quantitative Health Sciences, Cleveland Clinic
 ##' @seealso \code{\link[rms]{cph}} \code{\link[cmprsk]{crr}}

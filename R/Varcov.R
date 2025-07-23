@@ -1,5 +1,4 @@
 Varcov <- function(object, ...) UseMethod("Varcov")
-
 Varcov.lrm <- function(object, regcoef.only = FALSE, ...) {
   Varcov.default(object, regcoef.only, ...)
 } # for fastbw etc.
@@ -12,7 +11,6 @@ Varcov.cph <- function(object, regcoef.only = FALSE, ...) {
 Varcov.psm <- function(object, regcoef.only = FALSE, ...) {
   Varcov.default(object, regcoef.only, ...)
 }
-
 Varcov.default <- function(object, regcoef.only = FALSE, ...) {
   vc <- object$Varcov
   if (length(vc)) {
@@ -32,7 +30,6 @@ Varcov.default <- function(object, regcoef.only = FALSE, ...) {
   }
   cov
 }
-
 Varcov.lm <- function(object, ...) {
   cof <- object$coefficients
   rinv <- solve(object$R, diag(length(cof)))
@@ -42,12 +39,9 @@ Varcov.lm <- function(object, ...) {
   dimnames(cov) <- list(nm, nm)
   cov
 }
-
 Varcov.glm <- function(object, ...) {
   s <- stats::summary.glm(object)
   s$cov.unscaled * s$dispersion
 }
-
 Varcov.fit.mult.impute <- function(object, ...) object$var
-
 Varcov.multinom <- function(object, ...) stats::vcov(object)

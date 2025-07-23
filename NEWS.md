@@ -1,4 +1,6 @@
-# QHScrnomo 3.1.0
+# QHScrnomo 3.0.2
+
+* HTML documentation issue
 
 # QHScrnomo 3.0.1
 

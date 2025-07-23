@@ -18,7 +18,7 @@ An \code{\link[rms]{anova.rms}} matrix
 Uses the \code{\link[rms]{anova.rms}} method to construct an analysis of variance table for the competing risks regression model fit from \code{\link[QHScrnomo]{crr.fit}}.
 }
 \note{
-This function requires that the \code{\link{rms}} package is attached
+This function requires that the \code{\link[rms]{rms}} package is attached
 }
 \examples{
 dd <- datadist(prostate.dat)
